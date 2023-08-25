@@ -1,86 +1,89 @@
 import { useState, useEffect } from 'react';
-import { Searchbar } from './Searchbar/Searchbar';
-import toast, { Toaster } from 'react-hot-toast';
-import { ThreeCircles } from 'react-loader-spinner';
-import { ImageGallery } from './ImageGallery/ImageGallery';
-import { fetchImages } from 'services/PixabayAPI';
-import { Button } from './Button/Button';
-import { Loader } from './Loader/Loader';
-
+import { nanoid } from 'nanoid';
 import css from './App.module.css';
 
-export const App = () => {
-  const [query, setQuery] = useState('');
-  const [images, setImages] = useState([]);
-  const [page, setPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [endCollection, setEndCollection] = useState(false);
+import { ContactForm } from './ContactForm/ContactForm';
+import { ContactList } from './ContactList/ContactList';
+import { Filter } from './Filter/Filter';
 
-  const handleSubmitForm = query => {
-    setQuery(query);
-    setPage(1);
-    setImages([]);
-    setEndCollection(false);
-  };
-  const handleLoadMore = async () => {
-    await setPage(prev => prev + 1);
-    setIsLoadingMore(true);
-  };
+export const App = () => {
+  const [contacts, setContacts] = useState(() => {
+    return (
+      JSON.parse(localStorage.getItem('contacts')) ?? [
+        { id: 'id-1', name: 'Oksana Ivanenko', number: '521-34-87' },
+        { id: 'id-2', name: 'Vasyl Kovalchuk', number: '765-98-12' },
+        { id: 'id-3', name: 'Nadia Hrytsenko', number: '332-56-71' },
+        { id: 'id-4', name: 'Taras Petrenko', number: '126-54-87' },
+        { id: 'id-5', name: 'Marina Shevchenko', number: '421-89-33' },
+      ]
+    );
+  });
+
+  const [filter, setFilter] = useState('');
+
   useEffect(() => {
-    if (query === '') {
+    localStorage.setItem('contacts', JSON.stringify(contacts));
+  }, [contacts]);
+
+  const generateId = () => {
+    return nanoid(6);
+  };
+
+  const formSubmitHandler = data => {
+    if (contacts.some(contact => contact.name === data.name)) {
+      alert(`${data.name} is already in contact list`);
       return;
     }
-    const fetchQuery = async () => {
-      try {
-        setIsLoading(true);
-        const data = await fetchImages(query, page);
-        setImages(prev => [...prev, ...data.hits]);
-        if (!data.totalHits) {
-          return toast.error(
-            'Sorry, there are no images matching your search query.'
-          );
-        }
-        const totalPages = Math.ceil(data.totalHits / 12);
-        if (page === totalPages) {
-          setEndCollection(true);
-          setIsLoadingMore(true);
-          toast.error('The end🙄');
-        }
-      } catch {
-        console.log('Error');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchQuery();
-  }, [query, page]);
+    setContacts([
+      ...contacts,
+      { id: generateId(), name: data.name, number: data.number },
+    ]);
+  };
 
-  const showLoadMoreBtn = images.length > 0 && !endCollection;
-  const hideGallery = images.length > 0;
+  const handleChangeFilter = e => {
+    const { value } = e.currentTarget;
+    setFilter(value);
+  };
+
+  const renderFilteredContacts = () => {
+    const normalizedContacts = filter.toLowerCase();
+    return contacts.filter(contact =>
+      contact.name.toLowerCase().includes(normalizedContacts)
+    );
+  };
+
+  const removeContact = deleteId => {
+    setContacts(PrevState =>
+      PrevState.filter(contact => contact.id !== deleteId)
+    );
+    setFilter('');
+  };
+  const filteredContactList = renderFilteredContacts();
   return (
-    <div className={css.app}>
-      <Toaster position="top-right" reverseOrder={false} />
-
-      <Searchbar onSubmit={handleSubmitForm} />
-      {hideGallery && <ImageGallery images={images} />}
-      {showLoadMoreBtn && <Button onClick={() => handleLoadMore()} />}
-      {isLoading && isLoadingMore && (
-        <Loader>
-          <ThreeCircles
-            height="100"
-            width="100"
-            color="#063970"
-            wrapperStyle={{}}
-            wrapperClass=""
-            visible={true}
-            ariaLabel="three-circles-rotating"
-            outerCircleColor=""
-            innerCircleColor=""
-            middleCircleColor=""
-          />
-        </Loader>
-      )}
+    <div
+      style={{
+        paddingTop: '60px',
+        paddingBottom: '60px',
+        height: '100vh',
+        display: 'flex',
+        justifyContent: 'center',
+        flexDirection: 'column',
+        alignItems: 'center',
+        color: '#010101',
+      }}
+    >
+      <h1 className={css.title}>Phonebook</h1>
+      <ContactForm onSubmit={formSubmitHandler} />
+      <h2 className={css.subtitle}>Contacts</h2>
+      <p className={css.total}>
+        Total contacts:{' '}
+        <span className={css.total_count}>{contacts.length}</span>
+      </p>
+      <Filter value={filter} onChange={handleChangeFilter} />
+      <ContactList
+        filteredContactList={filteredContactList}
+        removeContact={removeContact}
+      />
     </div>
   );
 };
