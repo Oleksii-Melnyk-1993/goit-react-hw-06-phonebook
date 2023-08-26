@@ -30,7 +30,7 @@ export const ContactForm = () => {
   };
 
   const handleSubmit = (values, { resetForm }) => {
-    handleChange({ values });
+    handleChange(values);
     resetForm();
   };
 
