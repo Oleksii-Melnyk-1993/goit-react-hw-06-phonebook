@@ -25,7 +25,7 @@ export const ContactForm = () => {
       return;
     }
     dispatch(
-      addContact({ id: generetedId, name: data.name, number: data.number })
+      addContact({ id: generetedId(), name: data.name, number: data.number })
     );
   };
 
