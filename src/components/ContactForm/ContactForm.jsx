@@ -10,10 +10,10 @@ export const ContactForm = () => {
   const contacts = useSelector(getContacts);
   const dispatch = useDispatch();
 
-  const initialValues = {
-    name: '',
-    number: '',
-  };
+  // const initialValues = {
+  //   name: '',
+  //   number: '',
+  // };
   const generetedId = () => {
     return nanoid(5);
   };
@@ -37,7 +37,7 @@ export const ContactForm = () => {
     <form
       className={css.form_wrapper}
       onSubmit={handleSubmit}
-      initialValues={initialValues}
+      // initialValues={initialValues}
     >
       <FcPhoneAndroid size={'35px'} className={css.icon} />
       <label className={css.label}>
