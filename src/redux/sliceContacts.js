@@ -10,7 +10,7 @@ const initialState = {
   ],
 };
 
-const sliceContacts = createSlice({
+export const sliceContacts = createSlice({
   name: 'contacts',
   initialState,
   reducers: {
