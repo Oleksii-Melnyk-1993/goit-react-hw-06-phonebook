@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import css from './ContactForm.module.css';
 import { FcPhoneAndroid } from 'react-icons/fc';
 import { useDispatch, useSelector } from 'react-redux';
@@ -70,8 +69,4 @@ export const ContactForm = () => {
       </button>
     </form>
   );
-};
-
-ContactForm.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
 };
