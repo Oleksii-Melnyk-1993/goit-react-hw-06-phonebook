@@ -37,7 +37,7 @@ export const ContactForm = () => {
   const formSubmitHandler = e => {
     e.preventDefault();
     if (contacts.some(contact => contact.name === name)) {
-      toast.error(`${name}is already in list!`);
+      toast.error(`${name} is already in list!`);
       return;
     }
     dispatch(addContact({ id: generetedId(), name: name, number: number }));
