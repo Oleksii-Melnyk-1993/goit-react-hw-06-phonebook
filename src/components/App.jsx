@@ -5,6 +5,7 @@ import { ContactForm } from './ContactForm/ContactForm';
 import { ContactList } from './ContactList/ContactList';
 import { Filter } from './Filter/Filter';
 import { getContactsCount } from 'redux/selectors';
+import { Toaster } from 'react-hot-toast';
 
 export const App = () => {
   const totalCount = useSelector(getContactsCount);
@@ -30,6 +31,7 @@ export const App = () => {
       </p>
       <Filter />
       <ContactList />
+      <Toaster position="top-right" />
     </div>
   );
 };

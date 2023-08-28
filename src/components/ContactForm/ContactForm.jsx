@@ -3,9 +3,10 @@ import { FcPhoneAndroid } from 'react-icons/fc';
 import { useDispatch, useSelector } from 'react-redux';
 import { getContacts } from 'redux/selectors';
 import { nanoid } from '@reduxjs/toolkit';
-import { toast } from 'react-toastify';
+import toast from 'react-hot-toast';
 import { addContact } from 'redux/sliceContacts';
 import { useState } from 'react';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const ContactForm = () => {
   const [name, setName] = useState('');
